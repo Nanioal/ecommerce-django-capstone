@@ -1,7 +1,11 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    return render(request, 'store/index.html')
 # store/views.py
 
-from rest_framework import generics, permissions
+""" from rest_framework import generics, permissions
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
 
@@ -19,3 +23,4 @@ class ProductListCreateView(generics.ListCreateAPIView):
         serializer.save()
 
 # Create your views here.
+ """

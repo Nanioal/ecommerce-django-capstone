@@ -1,9 +1,22 @@
+from rest_framework import generics
+from .models import Product
+from .serializers import ProductSerializer
 from django.shortcuts import render
-from django.http import HttpResponse
 
 def index(request):
     return render(request, 'store/index.html')
-# store/views.py
+
+
+
+
+class ProductListCreate(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
 
 """ from rest_framework import generics, permissions
 from .models import Category, Product

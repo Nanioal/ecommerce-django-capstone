@@ -2,12 +2,14 @@ from rest_framework import generics
 from .models import Product
 from .serializers import ProductSerializer
 from django.shortcuts import render
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+class TokenObtainPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
 
 def index(request):
     return render(request, 'store/index.html')
-
-
-
 
 class ProductListCreate(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -16,6 +18,8 @@ class ProductListCreate(generics.ListCreateAPIView):
 class ProductRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
     
 
 """ from rest_framework import generics, permissions

@@ -147,3 +147,8 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'store.User'
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:8000",
+]
+
+

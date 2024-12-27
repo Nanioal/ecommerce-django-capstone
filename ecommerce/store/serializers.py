@@ -1,8 +1,8 @@
-from rest_framework import serializers
-from .models import Product, Category
-from rest_framework import serializers
 from .models import User, Product, Category, Review
-
+from rest_framework import serializers
+from .models import Review
+from .models import ProductImage
+from .models import Wishlist
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -18,15 +18,29 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name']
 
-from rest_framework import serializers
-from .models import Product
-
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'category', 'stock_quantity', 'image_url']
-class ReviewSerializer(serializers.ModelSerializer): 
-    class Meta: 
-        model = Review 
-        fields = ['id', 'product', 'user', 'rating', 'comment', 'created_date'] 
+
+class ReviewSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+
+    class Meta:
+        model = Review
+        fields = ['id', 'product', 'user', 'rating', 'comment', 'created_date']
         read_only_fields = ['user', 'created_date']
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'product', 'image_url']
+
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wishlist
+        fields = ['id', 'user', 'product', 'added_date']
+        read_only_fields = ['user', 'added_date']

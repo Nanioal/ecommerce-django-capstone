@@ -1,10 +1,10 @@
-from rest_framework import viewsets, permissions
-from .models import User, Product, Category
-from .serializers import UserSerializer, ProductSerializer, CategorySerializer
 from rest_framework import viewsets, permissions, filters
-from .models import User, Product, Category, Review
-from .serializers import UserSerializer, ProductSerializer, CategorySerializer, ReviewSerializer
+from .models import User, Product, Category, Review, ProductImage, Wishlist
+from .serializers import UserSerializer, ProductSerializer, CategorySerializer, ReviewSerializer, ProductImageSerializer,  WishlistSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import serializers, viewsets, permissions
+
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -39,9 +39,32 @@ class ProductViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
-class ReviewViewSet(viewsets.ModelViewSet): 
-    queryset = Review.objects.all() 
-    serializer_class = ReviewSerializer 
-    permission_classes = [permissions.IsAuthenticated] 
-    def perform_create(self, serializer): 
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        try:
+            serializer.save(user=self.request.user)
+        except Product.DoesNotExist:
+            raise serializers.ValidationError("Product does not exist.")
+        except Exception as e:
+            raise serializers.ValidationError(str(e))
+
+
+class ProductImageViewSet(viewsets.ModelViewSet):
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class WishlistViewSet(viewsets.ModelViewSet):
+    queryset = Wishlist.objects.all()
+    serializer_class = WishlistSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -25,6 +25,16 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Order(models.Model):
+    product = models.ForeignKey(Product, related_name='orders', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        self.product.stock_quantity -= self.quantity
+        self.product.save()
+        super().save(*args, **kwargs)
+        
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image_url = models.URLField()

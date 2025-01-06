@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Review
 from .models import ProductImage
 from .models import Wishlist
+from .models import Order
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -31,7 +32,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ['id', 'product', 'user', 'rating', 'comment', 'created_date']
         read_only_fields = ['user', 'created_date']
 
-
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['product', 'quantity', 'order_date']
+        
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage

@@ -1,11 +1,16 @@
 from rest_framework import viewsets, permissions, filters
-from .models import User, Product, Category, Review, ProductImage, Wishlist
-from .serializers import UserSerializer, ProductSerializer, CategorySerializer, ReviewSerializer, ProductImageSerializer,  WishlistSerializer
+from .models import User, Product, Category, Review, ProductImage, Wishlist,  Order
+from .serializers import UserSerializer, ProductSerializer, CategorySerializer, ReviewSerializer, ProductImageSerializer,  WishlistSerializer, OrderSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers, viewsets, permissions
+from rest_framework.pagination import PageNumberPagination
 
 
 
+class ProductPagination(PageNumberPagination):
+     page_size = 10 
+     page_size_query_param = 'page_size' 
+     max_page_size = 100
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -35,11 +40,16 @@ class ProductViewSet(viewsets.ModelViewSet):
         'stock_quantity': ['gte', 'lte'],
     }
     search_fields = ['name']
+    pagination_class = ProductPagination
 
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
 
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

@@ -25,7 +25,12 @@ SECRET_KEY = "django-insecure-ru+od141vedwdi9ub*l9n&jvo@*bf)(*dipd^f$pclb+_o79e_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '8000-nanioal-ecommercedjango-2e5litoo2lc.ws-eu117.gitpod.io'
+]
+
 
 
 # Application definition

@@ -4,6 +4,7 @@ from .serializers import UserSerializer, ProductSerializer, CategorySerializer, 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers, viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth import authenticate
 
 
 class ProductPagination(PageNumberPagination):
@@ -34,11 +35,27 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return User.objects.all()
         return User.objects.filter(id=self.request.user.id)
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
+    def create_user(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
+    def sign_in_user(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+        if user:
+            return Response({"status": "Logged in", "user": UserSerializer(user).data})
+            return Response({"error": "Invalid credentials"}, status=400)
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -77,6 +94,13 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'])
+    def my_orders(self, request):
+        queryset = self.get_queryset().filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import pytz 
+from django.utils.timezone import is_naive, make_aware, utc
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +49,7 @@ INSTALLED_APPS = [
     'store',
     'rest_framework_simplejwt',
     'django_filters',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -118,8 +122,10 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+#USE_TZ = True
 
+utc = pytz.UTC
+my_time = timezone.now().astimezone(utc)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers, viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import authenticate
-
+from rest_framework.decorators import action
 
 class ProductPagination(PageNumberPagination):
      page_size = 10 
@@ -129,3 +129,5 @@ class WishlistViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+

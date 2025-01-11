@@ -5,11 +5,6 @@ from .views import ProductViewSet, ProductImageViewSet, WishlistViewSet, OrderVi
 
 
 
-
-
-
-
-
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'products', ProductViewSet, basename='product') 

@@ -35,7 +35,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['product', 'quantity', 'order_date']
+        fields = ['__all__']
         
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:

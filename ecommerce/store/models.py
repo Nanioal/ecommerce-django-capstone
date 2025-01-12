@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -28,7 +29,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     product = models.ForeignKey(Product, related_name='orders', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=default_user.id)  # Use the default user ID
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure this line is correct
     quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -39,6 +40,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Order of {self.product} by {self.user}'
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)

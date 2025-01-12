@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
+from django.db import IntegrityError
 from .models import User, Product, Category, Review, ProductImage, Wishlist, Order
 from .serializers import UserSerializer, ProductSerializer, CategorySerializer, ReviewSerializer, ProductImageSerializer, WishlistSerializer, OrderSerializer
 
@@ -96,6 +97,30 @@ class OrderViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def create_order(self, request, pk=None):
+        product_id = pk
+        quantity = request.data.get('quantity')
+        
+        try:
+            # Retrieve the product (replace with actual product retrieval logic)
+            product = Product.objects.get(id=product_id)
+            
+            # Use the request user if authenticated, otherwise create a default user
+            if request.user.is_authenticated:
+                user = request.user
+            else:
+                user, created = User.objects.get_or_create(username='default_user', email='default_user@example.com')
+
+            # Create the order
+            order = Order.objects.create(user=user, product=product, quantity=quantity)
+            serializer = OrderSerializer(order)
+            return Response(serializer.data, status=201)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product does not exist.'}, status=400)
+        except IntegrityError as e:
+            return Response({'error': str(e)}, status=400)
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

@@ -1,5 +1,5 @@
 markdown
-# Django E-Commerce Project
+# Django E-Commerce Product API Project
 
 ## Overview
 
